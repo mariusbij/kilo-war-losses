@@ -4,11 +4,11 @@ namespace App\Services\EquipmentService\DTO;
 
 class StatsDTO
 {
-    public function __construct(private int $total,
-                                private int $destroyed,
-                                private int $damaged,
-                                private int $captured,
-                                private int $abandoned)
+    public function __construct(private readonly int $total,
+                                private readonly int $destroyed,
+                                private readonly int $damaged,
+                                private readonly int $captured,
+                                private readonly int $abandoned)
     {
     }
 
