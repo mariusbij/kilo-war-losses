@@ -99,19 +99,19 @@
                         <label class="font-semibold" for="tags">Tags:</label><br>
                         <div id="tags">
                             <div class="flex flex-row">
-                                <input type="checkbox" name="tags[]" value="destroyed" id="destroyed"/>
+                                <input @if(!is_null(request()->tags))@if (in_array('destroyed', request()->tags )) checked @endif @endif type="checkbox" name="tags[]" value="destroyed" id="destroyed"/>
                                 <label class="pl-2" for="destroyed">Destroyed</label>
                             </div>
                             <div class="flex flex-row">
-                                <input type="checkbox" name="tags[]" value="damaged" id="damaged"/>
+                                <input @if(!is_null(request()->tags))@if (in_array('damaged', request()->tags )) checked @endif @endif type="checkbox" name="tags[]" value="damaged" id="damaged"/>
                                 <label class="pl-2" for="damaged">Damaged</label>
                             </div>
                             <div class="flex flex-row">
-                                <input type="checkbox" name="tags[]" value="abandoned" id="abandoned"/>
+                                <input @if(!is_null(request()->tags))@if (in_array('abandoned', request()->tags )) checked @endif @endif type="checkbox" name="tags[]" value="abandoned" id="abandoned"/>
                                 <label class="pl-2" for="abandoned">Abandoned</label>
                             </div>
                             <div class="flex flex-row">
-                                <input type="checkbox" name="tags[]" value="captured" id="captured"/>
+                                <input @if(!is_null(request()->tags))@if (in_array('captured', request()->tags )) checked @endif @endif type="checkbox" name="tags[]" value="captured" id="captured"/>
                                 <label class="pl-2" for="captured">Captured</label>
                             </div>
                         </div>

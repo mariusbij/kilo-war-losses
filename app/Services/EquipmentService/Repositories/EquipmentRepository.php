@@ -44,6 +44,7 @@ class EquipmentRepository implements EquipmentRepositoryInterface
             $equipment->latitude = $validated['latitude'];
             $equipment->longitude = $validated['longitude'];
         }
+
         $success = $equipment->save();
 
         if ($success) {
