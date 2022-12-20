@@ -37,10 +37,10 @@ class EquipmentController extends Controller
 
         if (!$success) {
             return back()
-                ->with('failure', 'The report has not been submitted!');
+                ->with('failure', 'The equipment location updating failed!');
         } else {
             return back()
-                ->with('success', 'The report have been submitted successfully!');
+                ->with('success', 'The equipment location was successful!');
         }
     }
 }
