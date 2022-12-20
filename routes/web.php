@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\ReportNewEquipmentController;
+use App\Http\Controllers\ReportNewController;
+use App\Http\Controllers\StatsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,18 +17,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(EquipmentController::class)->group(function () {
-    Route::get('/', 'index');
+    Route::get('/', 'index')->name('home');
     Route::get('/equipment/{id}', 'show')->name('singleEquipmentPage');
+    Route::post('/equipment', 'updateLocation')->name('updateLocation');
 });
 
-Route::controller(ReportNewEquipmentController::class)->group(function () {
+Route::controller(StatsController::class)->group(function () {
+    Route::get('/stats', 'index')->name('stats');
+});
+
+Route::controller(ReportNewController::class)->group(function () {
     Route::get('/report-new', 'index')->name('reportNewPage');
     Route::post('/report-new', 'store')->name('storeNew');
 });
-
-
-
-
-
-
-

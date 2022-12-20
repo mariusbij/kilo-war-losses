@@ -19,16 +19,16 @@ class EquipmentFactory extends Factory
      */
     public function definition()
     {
-        $side_countries = ['10','20'];
+        $side_countries = ['10' , '20'];
 
         return [
             'name' => fake()->word(),
-            'geolocation' => json_encode(fake()->localCoordinates()),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
             'side_country' => $side_countries[array_rand($side_countries)],
             'date' => fake()->date,
             'category_id' => Category::all()->random()->getAttribute('id'),
             'source_url' => 'https://twitter.com/UAWeapons/status/1581908407967092738',
-            'approved' => true,
         ];
     }
 }

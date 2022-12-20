@@ -2,28 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateLocationRequest;
 use App\Services\EquipmentService\EquipmentService;
-use App\Services\EquipmentService\Models\Equipment;
+use App\Services\EquipmentService\Repositories\EquipmentRepositoryInterface;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
-    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Contracts\Foundation\Application
+    public function __construct(private readonly EquipmentRepositoryInterface $equipmentRepository)
     {
-        $equipmentService = new EquipmentService();
-        $equipment = $equipmentService->filter($request);
+    }
+
+    public function index(Request $request): View
+    {
+        $equipmentService = new EquipmentService($request);
+        $equipment = $equipmentService->filterEquipment();
 
         return view('app')
             ->with('equipment', $equipment)
-            ->with('categories', $equipmentService->getAllCategories());
+            ->with('categories', $this->equipmentRepository->getAllCategories());
     }
 
-    public function show(int $id)
+    public function show(int $id): View
     {
-        $equipmentService = new EquipmentService();
-        $equipment = $equipmentService->find($id);
+        return view('single')
+            ->with('equipment', $this->equipmentRepository->findOrFail($id));
+    }
 
-        return view('single-equipment')
-            ->with('equipment', $equipment);
+    public function updateLocation(UpdateLocationRequest $request): RedirectResponse
+    {
+        $success = $this->equipmentRepository->updateLocation($request);
+
+        if (!$success) {
+            return back()
+                ->with('failure', 'The report has not been submitted!');
+        } else {
+            return back()
+                ->with('success', 'The report have been submitted successfully!');
+        }
     }
 }

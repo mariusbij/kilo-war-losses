@@ -15,10 +15,10 @@ class TagSeeder extends Seeder
      */
     public function run()
     {
-        Tag::create(['name' => 'destroyed']);
-        Tag::create(['name' => 'captured']);
-        Tag::create(['name' => 'abandoned']);
-        Tag::create(['name' => 'damaged']);
+//        Tag::create(['name' => 'destroyed']);
+//        Tag::create(['name' => 'captured']);
+//        Tag::create(['name' => 'abandoned']);
+//        Tag::create(['name' => 'damaged']);
 
         $equipment = Equipment::all();
 

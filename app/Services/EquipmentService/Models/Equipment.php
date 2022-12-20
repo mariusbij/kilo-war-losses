@@ -16,6 +16,8 @@ class Equipment extends Model
 
     public $primaryKey  = 'id';
 
+    protected $table = 'equipment';
+
     protected $fillable = [
         'name',
         'date',

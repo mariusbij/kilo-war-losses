@@ -2,66 +2,52 @@
 
 namespace App\Services\EquipmentService;
 
-use App\Services\EquipmentService\Models\Category;
+use App\Services\EquipmentService\DTO\StatsDTO;
 use App\Services\EquipmentService\Models\Equipment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use Spatie\Tags\Tag;
 
 class EquipmentService
 {
-    public function filter(Request $request)
+    public const LIST_PAGINATION = 15;
+
+    public function __construct(private ?Request $request = null)
     {
-        return Equipment::filter($request)
+    }
+
+    public function filterEquipment(): mixed
+    {
+        return Equipment::filter($this->request)
             ->orderBy('date', 'DESC')
-            ->paginate(15)
+            ->paginate(self::LIST_PAGINATION)
             ->withQueryString();
     }
 
-    public function find(int $id)
+    public function getStats(): StatsDTO
     {
-        return Equipment::findOrFail($id);
+        $equipment = Equipment::filter($this->request);
+        $total = $equipment->count();
+        $destroyed = (clone $equipment)->withAllTags(['destroyed'])->count();
+        $damaged = (clone $equipment)->withAllTags(['damaged'])->count();
+        $abandoned = (clone $equipment)->withAllTags(['abandoned'])->count();
+        $captured = (clone $equipment)->withAllTags(['captured'])->count();
+
+        return new statsDTO($total, $destroyed, $damaged, $captured, $abandoned);
     }
 
-    public function getAllCategories(): Collection
+    public function checkForSimilarReported(): Collection
     {
-        return Category::all();
-    }
-
-    public function getAllTags(): Collection
-    {
-        return Tag::all();
-    }
-
-    public function store(Request $request): bool
-    {
-        $this->validate($request);
-
-        $equipment = new Equipment();
-        $equipment->name = $request->input('name');
-        $equipment->side_country = $request->input('side_country');
-        $equipment->category_id = $request->input('category_id');
-        $equipment->date = $request->input('date');
-        $equipment->source_url = $request->input('source_url');
-        $equipment->approved = false;
-
-        $success = $equipment->save();
-
-        if ($success) {
-            $equipment->attachTags($request->input('tags'));
-        }
-        return $success;
-    }
-
-    private function validate(Request $request): void
-    {
-        $request->validate([
-            'name' => 'required|max:255',
-            'side_country' => 'required',
-            'category_id' => 'required',
-            'date' => 'required|date',
-            'source_url' => 'required|url',
-            'tags' => 'required'
+        $data = $this->request->only(['name', 'side_country', 'category_id', 'date']);
+        $filterRequest = new Request();
+        $daysToCheck = 3;
+        $filterRequest->query->add([
+            'name' => $data['name'],
+            'side_country' => $data['side_country'],
+            'category_id' => $data['category_id'],
+            'date_from' => date('Y-m-d', strtotime($data['date']. sprintf(' - %d days', $daysToCheck))),
+            'date_to' => date('Y-m-d', strtotime($data['date']. sprintf(' + %d days', $daysToCheck)))
         ]);
+
+        return Equipment::filter($filterRequest)->get();
     }
 }
